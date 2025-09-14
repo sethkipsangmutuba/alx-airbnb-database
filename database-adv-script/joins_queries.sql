@@ -1,73 +1,23 @@
--- Query 1: INNER JOIN to get all bookings and their respective users
-SELECT
-    bookings.id AS booking_id,
-    bookings.property_id,
-    bookings.start_date,
-    bookings.end_date,
-    users.id AS user_id,
-    users.first_name,
-    users.last_name,
-    users.email
-FROM bookings
-INNER JOIN users
-    ON bookings.user_id = users.id
-ORDER BY bookings.id;  -- Add ORDER BY
+-- 1. INNER JOIN: Retrieve all bookings and their respective users
+SELECT b.booking_id, b.user_id, u.name, b.property_id, b.booking_date
+FROM bookings b
+INNER JOIN users u ON b.user_id = u.user_id
+ORDER BY b.booking_id;
 
--- Query 2: LEFT JOIN to get all properties and their reviews
-SELECT
-    properties.id AS property_id,
-    properties.name AS property_name,
-    properties.city,
-    reviews.id AS review_id,
-    reviews.rating,
-    reviews.comment
-FROM properties
-LEFT JOIN reviews
-    ON properties.id = reviews.property_id
-ORDER BY properties.id;  -- Add ORDER BY
+-- 2. LEFT JOIN: Retrieve all properties and their reviews, including properties with no reviews
+SELECT p.property_id, p.name AS property_name, r.review_id, r.rating
+FROM properties p
+LEFT JOIN reviews r ON p.property_id = r.property_id
+ORDER BY p.property_id;
 
-
-
--- Query 3: FULL OUTER JOIN to get all users and all bookings
-SELECT
-    users.id AS user_id,
-    users.first_name,
-    users.last_name,
-    bookings.id AS booking_id,
-    bookings.property_id,
-    bookings.start_date,
-    bookings.end_date
-FROM users
-FULL OUTER JOIN bookings
-    ON users.id = bookings.user_id
-ORDER BY users.id;  -- Add ORDER BY
-
-
-
--- Simulate FULL OUTER JOIN in SQLite
-SELECT
-    users.id AS user_id,
-    users.first_name,
-    users.last_name,
-    bookings.id AS booking_id,
-    bookings.property_id,
-    bookings.start_date,
-    bookings.end_date
-FROM users
-LEFT JOIN bookings
-    ON users.id = bookings.user_id
-
+-- 3. FULL OUTER JOIN: Retrieve all users and all bookings, even if no booking exists
+-- Note: SQLite does not support FULL OUTER JOIN natively.
+-- We can simulate it using UNION of LEFT JOIN and RIGHT JOIN
+SELECT u.user_id, u.name AS user_name, b.booking_id, b.property_id, b.booking_date
+FROM users u
+LEFT JOIN bookings b ON u.user_id = b.user_id
 UNION
-
-SELECT
-    users.id AS user_id,
-    users.first_name,
-    users.last_name,
-    bookings.id AS booking_id,
-    bookings.property_id,
-    bookings.start_date,
-    bookings.end_date
-FROM bookings
-LEFT JOIN users
-    ON users.id = bookings.user_id
-ORDER BY user_id;  -- Add ORDER BY
+SELECT u.user_id, u.name AS user_name, b.booking_id, b.property_id, b.booking_date
+FROM bookings b
+LEFT JOIN users u ON u.user_id = b.user_id
+ORDER BY user_id, booking_id;
