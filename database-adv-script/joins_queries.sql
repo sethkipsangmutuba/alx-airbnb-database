@@ -10,9 +10,7 @@ FROM properties p
 LEFT JOIN reviews r ON p.property_id = r.property_id
 ORDER BY p.property_id;
 
--- 3. FULL OUTER JOIN: Retrieve all users and all bookings, even if no booking exists
--- Note: SQLite does not support FULL OUTER JOIN natively.
--- We can simulate it using UNION of LEFT JOIN and RIGHT JOIN
+-- 3. Simulated FULL OUTER JOIN: Retrieve all users and all bookings, even if no booking exists
 SELECT u.user_id, u.name AS user_name, b.booking_id, b.property_id, b.booking_date
 FROM users u
 LEFT JOIN bookings b ON u.user_id = b.user_id
