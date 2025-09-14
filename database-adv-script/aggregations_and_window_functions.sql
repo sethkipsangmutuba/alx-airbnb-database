@@ -1,4 +1,4 @@
--- Query 1: Total bookings per user
+-- Total bookings per user
 SELECT 
     u.user_id,
     u.name AS user_name,
@@ -8,7 +8,7 @@ LEFT JOIN Bookings b ON u.user_id = b.user_id
 GROUP BY u.user_id, u.name
 ORDER BY total_bookings DESC;
 
--- Query 2: Rank properties by total bookings using ROW_NUMBER()
+-- Rank properties by total bookings
 WITH property_bookings AS (
     SELECT 
         p.property_id,
